@@ -139,6 +139,8 @@ def generate_trajectories_video(
     labels = session.identities_labels or list(
         map(str, range(1, session.n_animals + 1))
     )
+    for i in range(len(labels)):
+        labels[i] = f"Fish {labels[i]}"
 
     path_to_save_video = session.session_folder / video_name
 
