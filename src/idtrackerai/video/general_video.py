@@ -145,8 +145,10 @@ def generate_trajectories_video(
     # check the attributes of the session
     if hasattr(session, "diabetes_predictions"):
         diabetes_predictions = session.diabetes_predictions
+        logging.info("Diabetes predictions are available")
     else:
         diabetes_predictions = None
+        logging.info("Diabetes predictions are not available")
 
 
     path_to_save_video = session.session_folder / video_name
