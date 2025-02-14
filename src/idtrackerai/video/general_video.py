@@ -3,6 +3,7 @@ from itertools import pairwise
 
 import os
 import cv2
+import json
 import numpy as np
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QColor, QImage, QPainter
@@ -10,7 +11,6 @@ from qtpy.QtGui import QColor, QImage, QPainter
 from idtrackerai import Session
 from idtrackerai.GUI_tools import VideoPathHolder, get_cmap
 from idtrackerai.utils import track
-
 
 def QImageToArray(qimg: QImage) -> np.ndarray:
     width = qimg.width()
@@ -120,6 +120,7 @@ def generate_trajectories_video(
     starting_frame: int,
     ending_frame: int,
     no_labels: bool = False,
+    pred_dm_path=None,
 ):
 
     if draw_in_gray:
@@ -189,9 +190,8 @@ def generate_trajectories_video(
         )
 
         # draw the diabetes prediction on the top-right of the frame
-        print('diabetes_predictions:', diabetes_predictions)
         if diabetes_predictions is not None:
-            for id, prediction in diabetes_predictions.items():
+            for id, prediction in enumerate(diabetes_predictions):
                 if prediction == 'DM':
                     color = (0, 0, 255)
                 else:
