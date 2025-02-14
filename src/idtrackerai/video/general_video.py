@@ -157,6 +157,7 @@ def generate_trajectories_video(
     videoPathHolder = VideoPathHolder(session.video_paths)
 
     ending_frame = len(trajectories) - 1 if ending_frame is None else ending_frame
+    logging.info("My ending frame is %s", ending_frame)
     logging.info(f"Drawing from frame {starting_frame} to {ending_frame}")
 
     for frame in track(range(starting_frame, ending_frame), "Generating video"):
