@@ -203,9 +203,9 @@ def generate_trajectories_video(
                     wirte_text,
                     (10, 20 + 20 * id),
                     cv2.FONT_HERSHEY_COMPLEX,
-                    0.2,
+                    0.4,
                     color,
-                    2,
+                    1,
                 )
 
         video_writer.write(img)
