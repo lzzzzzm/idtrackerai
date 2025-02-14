@@ -123,7 +123,6 @@ def main():
             starting_frame=args.s,
             ending_frame=args.e,
             no_labels=args.no_labels,
-            pred_label_path=args.pred_label_path,
         )
 
 
