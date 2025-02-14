@@ -195,6 +195,7 @@ def generate_trajectories_video(
                     color = (0, 0, 255)
                 else:
                     color = (0, 255, 0)
+                print('prediction:', prediction)
                 wirte_text = f'Fish {id} : {prediction}'
 
                 img = cv2.putText(
