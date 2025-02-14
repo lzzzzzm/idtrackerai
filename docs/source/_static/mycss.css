@@ -1,0 +1,24 @@
+/* https://github.com/pydata/pydata-sphinx-theme/issues/1288 */
+a.my-external-link:after {
+    content: var(--pst-icon-external-link);
+    font: var(--fa-font-solid);
+    font-size: 0.9em;
+    margin-left: 0.3em;
+    margin-right: 0.15em;
+}
+
+/* remove the "Ctrl+K" shortcut icon from search bar */
+span.search-button__kbd-shortcut {
+    display: none
+}
+
+/* Since the theme switcher is in persistent navbar, margins has to be modified */
+.navbar-persistent--mobile {
+    margin-left: 2%;
+}
+
+/* TODO this breaks the main page layout but I want the main content to be justified on the left when no right sidebar is visible check their example https://pydata-sphinx-theme.readthedocs.io/en/stable/examples/in-page-toc.html */
+
+/* .bd-main .bd-content {
+    justify-content: left;
+} */
