@@ -1,6 +1,7 @@
 import logging
 from itertools import pairwise
 
+import os
 import cv2
 import numpy as np
 from qtpy.QtCore import Qt
@@ -120,6 +121,7 @@ def generate_trajectories_video(
     ending_frame: int,
     no_labels: bool = False,
 ):
+
     if draw_in_gray:
         logging.info("Drawing original video in grayscale")
 
@@ -139,8 +141,13 @@ def generate_trajectories_video(
     labels = session.identities_labels or list(
         map(str, range(1, session.n_animals + 1))
     )
-    for i in range(len(labels)):
-        labels[i] = f"Fish {labels[i]}"
+
+    # check the attributes of the session
+    if hasattr(session, "diabetes_predictions"):
+        diabetes_predictions = session.diabetes_predictions
+    else:
+        diabetes_predictions = None
+
 
     path_to_save_video = session.session_folder / video_name
 
@@ -157,7 +164,6 @@ def generate_trajectories_video(
     videoPathHolder = VideoPathHolder(session.video_paths)
 
     ending_frame = len(trajectories) - 1 if ending_frame is None else ending_frame
-    logging.info("My ending frame is %s", ending_frame)
     logging.info(f"Drawing from frame {starting_frame} to {ending_frame}")
 
     for frame in track(range(starting_frame, ending_frame), "Generating video"):
@@ -179,6 +185,25 @@ def generate_trajectories_video(
         img = draw_general_frame(
             img, frame, trajectories, centroid_trace_length, colors, labels, no_labels
         )
+
+        # draw the diabetes prediction on the top-right of the frame
+        if diabetes_predictions is not None:
+            for id, prediction in diabetes_predictions.items():
+                if prediction == 'DM':
+                    color = (0, 0, 255)
+                else:
+                    color = (0, 255, 0)
+                wirte_text = f'Fish {id} : {prediction}'
+
+                img = cv2.putText(
+                    img,
+                    wirte_text,
+                    (10, 20 + 20 * id),
+                    cv2.FONT_HERSHEY_COMPLEX,
+                    0.8,
+                    color,
+                    2,
+                )
 
         video_writer.write(img)
 

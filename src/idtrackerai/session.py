@@ -121,7 +121,7 @@ class Session:
     "True if the identity transfer has been done successfully"
     bounding_box_images_in_ram: bool = False
     "Keep bounding box images on RAM and until used, never write them on disk"
-
+    diabetes_predictions: dict | None = None
     def set_parameters(self, reset: bool = False, **parameters) -> set[str]:
         """Sets parameters to self only if they are present in the class annotations.
         The set of non recognized parameters names is returned"""
