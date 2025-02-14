@@ -189,6 +189,7 @@ def generate_trajectories_video(
         )
 
         # draw the diabetes prediction on the top-right of the frame
+        print('diabetes_predictions:', diabetes_predictions)
         if diabetes_predictions is not None:
             for id, prediction in diabetes_predictions.items():
                 if prediction == 'DM':
