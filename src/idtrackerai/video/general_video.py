@@ -168,7 +168,7 @@ def generate_trajectories_video(
 
     ending_frame = len(trajectories) - 1 if ending_frame is None else ending_frame
     logging.info(f"Drawing from frame {starting_frame} to {ending_frame}")
-    ending_frame = 100
+
     for frame in track(range(starting_frame, ending_frame), "Generating video"):
         try:
             img = videoPathHolder.read_frame(frame, not draw_in_gray)
@@ -259,6 +259,28 @@ def generate_trajectories_video(
             img, frame, trajectories, centroid_trace_length, colors, labels, no_labels
         )
         img = img[y:y+h, x:x+w]
+
+        # draw the diabetes prediction on the top-right of the frame
+        if diabetes_predictions is not None:
+            for id, prediction in enumerate(diabetes_predictions):
+                if prediction == 'DM':
+                    color = (0, 0, 255)
+                else:
+                    color = (0, 255, 0)
+                wirte_text = f'{id} : {prediction}'
+
+                font = cv2.FONT_HERSHEY_COMPLEX
+
+                img = cv2.putText(
+                    img,
+                    wirte_text,
+                    (10, 20 + 20 * id),
+                    font,
+                    0.5,
+                    color,
+                    1,
+                )
+
         video_writer.write(img)
 
     video_writer.release()
