@@ -7,9 +7,10 @@ import numpy as np
 from idtrackerai import Session
 from idtrackerai.utils import IdtrackeraiError, wrap_entrypoint
 
-from .general_video import generate_trajectories_video
-from .individual_videos import generate_individual_video
-
+# from .general_video import generate_trajectories_video
+# from .individual_videos import generate_individual_video
+from general_video import generate_trajectories_video
+from individual_videos import generate_individual_video
 
 @wrap_entrypoint
 def main():

@@ -168,7 +168,7 @@ def generate_trajectories_video(
 
     ending_frame = len(trajectories) - 1 if ending_frame is None else ending_frame
     logging.info(f"Drawing from frame {starting_frame} to {ending_frame}")
-
+    ending_frame = 100
     for frame in track(range(starting_frame, ending_frame), "Generating video"):
         try:
             img = videoPathHolder.read_frame(frame, not draw_in_gray)
@@ -188,6 +188,8 @@ def generate_trajectories_video(
         img = draw_general_frame(
             img, frame, trajectories, centroid_trace_length, colors, labels, no_labels
         )
+        # cv2.imshow("frame", img)
+        # cv2.waitKey(1)
 
         # draw the diabetes prediction on the top-right of the frame
         if diabetes_predictions is not None:
@@ -209,5 +211,58 @@ def generate_trajectories_video(
                 )
 
         video_writer.write(img)
+
+    # read the path_to_save_video, to select the roi
+    cap = cv2.VideoCapture(str(path_to_save_video))
+    if not cap.isOpened():
+        print("Error: Could not open video.")
+        return
+
+    # Read the first frame.
+    ret, frame = cap.read()
+    if not ret:
+        print("Error: Could not read video file.")
+        return
+    roi = cv2.selectROI("Select ROI", frame, fromCenter=False, showCrosshair=True)
+    cv2.destroyAllWindows()
+    x, y, w, h = roi
+    print(f"ROI selected: {roi}")
+
+    out_video_width = w
+    out_video_height = h
+
+    video_writer = cv2.VideoWriter(
+        str(path_to_save_video),
+        cv2.VideoWriter.fourcc(*"XVID"),
+        session.frames_per_second,
+        (out_video_width, out_video_height),
+    )
+
+    cap = cv2.VideoCapture(str(path_to_save_video))
+    for frame in track(range(starting_frame, ending_frame), "Generating video"):
+        try:
+            img = videoPathHolder.read_frame(frame, not draw_in_gray)
+            if resize_factor != 1:
+                img = cv2.resize(img, (0, 0), fx=resize_factor, fy=resize_factor)
+        except RuntimeError as exc:
+            logging.error(str(exc))
+            img = np.zeros(
+                (
+                    (out_video_height, out_video_width)
+                    if draw_in_gray
+                    else (out_video_height, out_video_width, 3)
+                ),
+                np.uint8,
+            )
+
+        img = draw_general_frame(
+            img, frame, trajectories, centroid_trace_length, colors, labels, no_labels
+        )
+        img = img[y:y+h, x:x+w]
+        video_writer.write(img)
+
+    video_writer.release()
+
+    cap.release()
 
     logging.info(f"Video generated in {path_to_save_video}")
